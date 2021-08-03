@@ -1,6 +1,8 @@
 <template>
   <div class="dashboard-container">
+
     <div class="app-container">
+      <div v-loading="loading" class="dashboard-container" />
       <el-card class="tree-card">
         <tree-tools :tree-node="company" :is-root="true" @addDepts="addDepts" />
         <el-tree :data="departs" :props="defaultProps" default-expand-all>
@@ -27,6 +29,7 @@ export default {
   },
   data() {
     return {
+      loading: false,
       node: null, // 当前选中的节点
       showDialog: false,
       company: {},
@@ -55,10 +58,11 @@ export default {
     },
     // 获取部门信息
     async getDepartments() {
+      this.loading = true
       const result = await getDepartments()
       this.company = { name: result.companyName, manager: '负责人', id: '' }
       this.departs = tranListToTreeData(result.depts, '') // 需要将其转化成树形结构
-      console.log(result)
+      this.loading = false
     }
   }
 }
